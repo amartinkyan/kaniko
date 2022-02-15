@@ -103,7 +103,9 @@ func CheckPushPermissions(opts *config.KanikoOptions) error {
 			destRef.Repository.Registry = newReg
 		}
 		tr := newRetry(util.MakeTransport(opts.RegistryOptions, registryName))
-		if err := checkRemotePushPermission(destRef, creds.GetKeychain(), tr); err != nil {
+    rt := &withUserAgent{t: tr}
+
+		if err := checkRemotePushPermission(destRef, creds.GetKeychain(), rt); err != nil {
 			return errors.Wrapf(err, "checking push permission for %q", destRef)
 		}
 		checked[destRef.Context().String()] = true
